@@ -45,7 +45,7 @@ class NinaXMPP:
             aioxmpp.make_security_layer(self.config['xmpp']['password']),
         )
 
-        async with self.client.connected() as stream:
+        async with self.client.connected():
             message_dispatcher = self.client.summon(
                 aioxmpp.dispatcher.SimpleMessageDispatcher
             )
