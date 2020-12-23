@@ -1,0 +1,5 @@
+PyYAML
+aioxmpp
+argparse-logging
+httpx
+shapely
