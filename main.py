@@ -189,15 +189,16 @@ class NinaXMPP:
 
 if __name__ == '__main__':
     import yaml
-    from argparse import ArgumentParser
+    import argparse
     from argparse_logging import add_log_level_argument
 
-    parser = ArgumentParser()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('config_file', type=argparse.FileType('r'))
     add_log_level_argument(parser)
     args = parser.parse_args()
 
-    with open('config.yml') as f:
-        config = yaml.safe_load(f)
+    config = yaml.safe_load(args.config_file)
+    args.config_file.close()
 
     main = NinaXMPP(config)
 
