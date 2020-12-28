@@ -1,0 +1,14 @@
+feeds:
+- https://warnung.bund.de/bbk.biwapp/warnmeldungen.json
+- https://warnung.bund.de/bbk.mowas/gefahrendurchsagen.json
+- https://warnung.bund.de/bbk.lhp/hochwassermeldungen.json
+- https://warnung.bund.de/bbk.dwd/unwetter.json
+- https://warnung.bund.de/bbk.katwarn/warnmeldungen.json
+
+database: sqlite:///database.db
+
+check_interval: 300
+
+xmpp:
+  jid: nina@example.org
+  password: s3cr3t

@@ -1,40 +1,25 @@
 import asyncio
-import html
 import logging
-import re
 import signal
-from typing import NamedTuple
 
 import aioxmpp
 import aioxmpp.dispatcher
 import httpx
-from shapely.geometry import Point, Polygon, MultiPolygon
+from shapely.geometry import Polygon, MultiPolygon
+from geoalchemy2.shape import to_shape, from_shape
+from sqlalchemy.orm.exc import NoResultFound
 
-
-def strip_html(text):
-    return html.unescape(re.sub('<[^<]+?>', '', text))
-
-
-class Registration(NamedTuple):
-    jid: aioxmpp.JID
-    point: Point = None
-    area: str = ''
-
-    def is_in_area(self, area):
-        if self.area:
-            return self.area in area['areaDesc']
-        elif self.point:
-            return self.point.within(area['multipolygon'])
-        else:
-            return False
+from .db import Event, Feed, Registration, initialize as init_db
+from .html import strip_html
+from .helper import parse_area, deref_multi
 
 
 class NinaXMPP:
+    commands = ('register', 'unregister', 'list', 'help')
+
     def __init__(self, config):
         self.config = config
-        self.feed_cache = {}
-        self.registrations = set()
-        self.seen_identifiers = set()
+        self.db = init_db(config['database'])
         self.logger = logging.getLogger(self.__class__.__name__)
 
     async def run(self):
@@ -52,14 +37,14 @@ class NinaXMPP:
                 None,
                 self.message_received,
             )
-            await self.update_feeds()
+            update_feeds_task = asyncio.create_task(self.update_feeds_task())
             await self.make_sigint_event().wait()
+            update_feeds_task.cancel()
 
-    def schedule_update_feeds(self):
-        asyncio.get_event_loop().call_later(
-            self.config['check_interval'],
-            self.update_feeds,
-        )
+        try:
+            await update_feeds_task
+        except asyncio.CancelledError:
+            pass
 
     def make_sigint_event(self):
         event = asyncio.Event()
@@ -71,41 +56,57 @@ class NinaXMPP:
         return event
 
     def message_received(self, msg):
-        cmds = ['register', 'unregister']
         if not msg.body:
             return
 
+        reply = aioxmpp.Message(
+            to=msg.from_,
+            type_=aioxmpp.MessageType.CHAT,
+        )
+
         body = msg.body.any()
-        for cmd in cmds:
+        for cmd in self.commands:
             if body == cmd or body.startswith(cmd + ' '):
-                getattr(self, cmd)(msg.from_, body[len(cmd) + 1:])
+                reply.body[None] = getattr(self, cmd)(
+                    str(msg.from_.bare()),
+                    body[len(cmd) + 1:],
+                )
+                self.client.enqueue(reply)
                 return
 
-    async def update_feeds(self):
-        self.schedule_update_feeds()
+    async def update_feeds_task(self):
+        while True:
+            await self.update_feeds()
+            await asyncio.sleep(self.config['check_interval'])
 
+    async def update_feeds(self):
         async with httpx.AsyncClient() as http_client:
-            for feed in self.config['feeds']:
+            for url in self.config['feeds']:
                 try:
-                    cached_headers = self.feed_cache[feed].headers
-                except KeyError:
+                    feed = self.db.query(Feed).filter_by(url=url).one()
+                except NoResultFound:
+                    feed = Feed(url=url)
                     headers = {}
                 else:
                     headers = {
-                        'If-Modified-Since': cached_headers['Last-Modified'],
-                        'If-None-Match': cached_headers['ETag'],
+                        'If-Modified-Since': feed.last_modified,
+                        'If-None-Match': feed.etag,
                     }
-                response = await http_client.get(feed, headers=headers)
+                response = await http_client.get(url, headers=headers)
 
                 if response.status_code == httpx.codes.OK:
-                    self.feed_cache[feed] = response
-                    self.send_updates_for_feed(feed)
+                    feed.last_modified = response.headers['Last-Modified']
+                    feed.etag = response.headers['ETag']
+                    self.db.add(feed)
+                    self.send_updates_for_feed(response.json())
+
+        self.db.commit()
 
     def send_updates_for_feed(self, feed):
-        for event in self.feed_cache[feed].json():
-            if event['identifier'] not in self.seen_identifiers:
+        for event in feed:
+            if not self.db.query(Event).filter_by(id=event['identifier']).one_or_none():
                 self.send_updates_for_event(event)
-                self.seen_identifiers.add(event['identifier'])
+                self.db.add(Event(id=event['identifier']))
 
     def send_updates_for_event(self, event):
         for area in event['info'][0]['area']:
@@ -115,71 +116,98 @@ class NinaXMPP:
                     Polygon(
                         list(map(float, point.split(',', 1)))
                         for point in polygon.split(' ')
+                        if point != '-1.0,-1.0'
                     )
                     for polygon in area['polygon']
+                    if ' ' in polygon
                 )
             except ValueError:
-                self.logger.info(
+                self.logger.warn(
                     'Event %s has invalid polygon',
                     event['identifier'],
                 )
+                return
 
-        for registration in self.registrations:
-            for area in event['info'][0]['area']:
-                if registration.is_in_area(area):
-                    self.send_update(registration.jid, event)
-                    break  # into registrations loop
+        for area in event['info'][0]['area']:
+            jid_query = self.db.query(Registration.jid).filter(
+                Registration.point.ST_Within(from_shape(area['multipolygon']))
+            )
+            for jid, in jid_query:
+                self.logger.debug(
+                    'Event %s matched for JID %s',
+                    event['identifier'],
+                    jid,
+                )
+                self.send_update(aioxmpp.JID.fromstr(jid), event)
 
     def send_update(self, jid, event):
         msg = aioxmpp.Message(
             to=jid,
             type_=aioxmpp.MessageType.CHAT,
         )
-        msg.body[None] = '\n'.join(map(strip_html, (
-            event['info'][0]['headline'],
-            event['info'][0]['description'],
-        )))
+        msg.body[None] = '\n'.join(filter(None, [
+            strip_html(deref_multi(event['info'][0], x) or '') for x in (
+                ['headline'],
+                ['description'],
+                ['instruction'],
+                ['area', 0, 'areaDesc'],
+            )
+        ]))
         self.client.enqueue(msg)
-
-    @staticmethod
-    def _area_to_registration(jid, area):
-        coords = re.match(r'^(\d+\.\d+),\s*(\d+\.\d+)$', area)
-        if coords:
-            return Registration(
-                jid=jid.bare(),
-                point=Point(float(coords[1]), float(coords[2])),
-            )
-        else:
-            return Registration(
-                jid=jid.bare(),
-                area=area,
-            )
 
     def register(self, jid, area):
-        registration = self._area_to_registration(jid, area)
-        self.logger.debug('Adding registration %r', registration)
-        self.registrations.add(registration)
+        'Register to messages regarding a coordinate'
 
-        msg = aioxmpp.Message(
-            to=jid,
-            type_=aioxmpp.MessageType.CHAT,
-        )
-        msg.body[None] = "Successfully registered to area {}".format(area)
-        self.client.enqueue(msg)
+        if not area:
+            return 'No coordinates given'
+
+        try:
+            point = parse_area(area)
+        except (TypeError, ValueError):
+            return 'Invalid coordinates: {}'.format(area)
+        else:
+            self.db.add(Registration(
+                jid=jid,
+                point=str(point),
+            ))
+            self.db.commit()
+
+            return 'Successfully registered to coordinates {0.y} {0.x}'.format(point)
 
     def unregister(self, jid, area):
-        msg = aioxmpp.Message(
-            to=jid,
-            type_=aioxmpp.MessageType.CHAT,
-        )
-        registration = self._area_to_registration(jid, area)
-        self.logger.debug('Adding registration %r', registration)
-        try:
-            self.registrations.remove(registration)
-        except KeyError:
-            body = "Not registered to area {}"
-        else:
-            body = "Successfully unregistered from area {}"
+        'Unregister from messages regarding a coordinate'
 
-        msg.body[None] = body.format(area)
-        self.client.enqueue(msg)
+        if not area:
+            return 'No coordinates given'
+
+        try:
+            point = parse_area(area)
+        except (TypeError, ValueError):
+            return 'Invalid coordinates: {}'.format(area)
+        else:
+            try:
+                registration = self.db.query(Registration).filter_by(
+                    jid=jid,
+                    point=str(point),
+                ).one()
+            except NoResultFound:
+                return 'Not registered to coordinates {0.y}, {0.x}'.format(point)
+            else:
+                self.db.delete(registration)
+                self.db.commit()
+                return 'Successfully unregistered from coordinates {0.y}, {0.x}'.format(point)
+
+    def list(self, jid, _):
+        'List active registrations'
+
+        return '\n'.join(
+            '{0.y}, {0.x}'.format(to_shape(point))
+            for point,
+            in self.db.query(Registration.point).filter_by(jid=jid)
+        ) or 'No active registrations.'
+
+    def help(self, jid, _):
+        'Show available commands'
+
+        cmds = [(cmd, getattr(self, cmd).__doc__) for cmd in self.commands]
+        return '\n'.join(f'{cmd}\n    {doc}' for cmd, doc in cmds)
