@@ -19,8 +19,11 @@ class NinaXMPP:
 
     def __init__(self, config):
         self.config = config
-        self.db = init_db(config['database'])
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger.info(
+            'Initializing DB. This can take several minutes at first run.'
+        )
+        self.db = init_db(config['database'])
 
     async def run(self):
         self.client = aioxmpp.PresenceManagedClient(
