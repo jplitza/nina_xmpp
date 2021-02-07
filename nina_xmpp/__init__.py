@@ -75,8 +75,13 @@ class NinaXMPP:
                 return
 
     async def update_feeds_task(self):
+        self.logger.debug('Started update feeds task')
         while True:
             await self.update_feeds()
+            self.logger.debug(
+                'Finished updating feeds, sleeping for '
+                f'{self.config["check_interval"]}s'
+            )
             await asyncio.sleep(self.config['check_interval'])
 
     async def update_feeds(self):
@@ -85,9 +90,13 @@ class NinaXMPP:
                 try:
                     feed = self.db.query(Feed).filter_by(url=url).one()
                 except NoResultFound:
+                    self.logger.info(f'Updating feed {url} for the first time')
                     feed = Feed(url=url)
                     headers = {}
                 else:
+                    self.logger.info(
+                        f'Updating feed {url} (last modified: {feed.last_modified}'
+                    )
                     headers = {
                         'If-Modified-Since': feed.last_modified,
                         'If-None-Match': feed.etag,
@@ -105,6 +114,7 @@ class NinaXMPP:
     def send_updates_for_feed(self, feed):
         for event in feed:
             if not self.db.query(Event).filter_by(id=event['identifier']).one_or_none():
+                self.logger.debug(f'Found new event {event["identifier"]}')
                 self.send_updates_for_event(event)
                 self.db.add(Event(id=event['identifier']))
 
