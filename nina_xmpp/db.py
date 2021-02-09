@@ -17,14 +17,13 @@ def _load_spatialite(dbapi_conn, connection_record):
 class Registration(Base):
     __tablename__ = 'registration'
     id = Column(Integer, primary_key=True)
-    jid = Column(String, index=True)
-    point = Column(Geometry(geometry_type='POINT', management=True))
+    jid = Column(String, index=True, nullable=False)
+    point = Column(Geometry(geometry_type='POINT', management=True), nullable=False)
 
 
 class Feed(Base):
     __tablename__ = 'feed'
-    id = Column(Integer, primary_key=True)
-    url = Column(String, unique=True)
+    url = Column(String, primary_key=True)
     last_modified = Column(String)
     etag = Column(String)
 
