@@ -17,7 +17,7 @@ def _load_spatialite(dbapi_conn, connection_record):
 class Registration(Base):
     __tablename__ = 'registration'
     id = Column(Integer, primary_key=True)
-    jid = Column(String, unique=True)
+    jid = Column(String, index=True)
     point = Column(Geometry(geometry_type='POINT', management=True))
 
 
