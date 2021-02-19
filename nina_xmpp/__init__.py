@@ -161,6 +161,8 @@ class NinaXMPP:
                 ['description'],
                 ['instruction'],
                 ['area', 0, 'areaDesc'],
+                ['effective'],
+                ['expires']
             )
         ]))
         self.client.enqueue(msg)
