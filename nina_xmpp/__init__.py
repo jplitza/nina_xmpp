@@ -15,7 +15,7 @@ from .helper import parse_area, deref_multi
 
 
 class NinaXMPP:
-    commands = ('register', 'unregister', 'list', 'help')
+    commands = ('register', 'unregister', 'feeds', 'list', 'help')
 
     def __init__(self, config):
         self.config = config
@@ -231,3 +231,16 @@ class NinaXMPP:
 
         cmds = [(cmd, getattr(self, cmd).__doc__) for cmd in self.commands]
         return '\n'.join(f'{cmd}\n    {doc}' for cmd, doc in cmds)
+
+    def feeds(self, jid, _):
+        'Show list of feeds with last update timestamp'
+
+        feeds = []
+        for url in self.config['feeds']:
+            try:
+                feed = self.db.query(Feed).filter_by(url=url).one()
+                last_modified = feed.last_modified
+            except NoResultFound:
+                last_modified = 'never'
+            feeds.append(f'{url} (last updated: {last_modified})')
+        return '\n'.join(feeds)
