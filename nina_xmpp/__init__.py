@@ -205,10 +205,17 @@ class NinaXMPP:
             return 'Successfully registered to coordinates {0.y} {0.x}'.format(point)
 
     def unregister(self, jid, area):
-        'Unregister from messages regarding a coordinate'
+        'Unregister from messages regarding a coordinate, or "unregister all"'
 
         if not area:
             return 'No coordinates given'
+
+        if area == 'all':
+            count = self.db.query(Registration).filter_by(jid=jid).delete()
+            if count == 0:
+                return 'No registrations found, none unregistered.'
+            else:
+                return 'Successfully unregistered from {} coordinates'.format(count)
 
         try:
             point = parse_area(area)
