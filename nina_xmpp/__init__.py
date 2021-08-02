@@ -103,7 +103,7 @@ class NinaXMPP:
                     headers = {}
                 else:
                     self.logger.info(
-                        f'Updating feed {url} (last modified: {feed.last_modified}'
+                        f'Updating feed {url} (last modified: {feed.last_modified})'
                     )
                     headers = {
                         'If-Modified-Since': feed.last_modified,
