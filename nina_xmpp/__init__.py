@@ -73,6 +73,12 @@ class NinaXMPP:
                 )
                 self.client.enqueue(reply)
                 return
+        else:
+            reply.body[None] = (
+                'I did not understand your request. '
+                'Type "help" for a list of available commands'
+            )
+            self.client.enqueue(reply)
 
     async def update_feeds_task(self):
         self.logger.debug('Started update feeds task')
