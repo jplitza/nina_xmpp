@@ -219,6 +219,7 @@ class NinaXMPP:
             if count == 0:
                 return 'No registrations found, none unregistered.'
             else:
+                self.db.commit()
                 return 'Successfully unregistered from {} coordinates'.format(count)
 
         try:
