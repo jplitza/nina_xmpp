@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, event, Column, DDL, Integer, String
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -19,6 +19,14 @@ class Registration(Base):
     id = Column(Integer, primary_key=True)
     jid = Column(String, index=True, nullable=False)
     point = Column(Geometry(geometry_type='POINT', management=True), nullable=False)
+
+
+# cannot use UniqueConstraint since the point column is added later on
+event.listen(
+    Registration.__table__,
+    'after_create',
+    DDL("CREATE UNIQUE INDEX uq_registration_jid_point on registration(jid, point)"),
+)
 
 
 class Feed(Base):

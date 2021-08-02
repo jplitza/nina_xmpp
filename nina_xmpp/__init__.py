@@ -7,6 +7,7 @@ import aioxmpp.dispatcher
 import httpx
 from shapely.geometry import Polygon, MultiPolygon
 from geoalchemy2.shape import to_shape, from_shape
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from .db import Event, Feed, Registration, initialize as init_db
@@ -200,9 +201,12 @@ class NinaXMPP:
                 jid=jid,
                 point=str(point),
             ))
-            self.db.commit()
+            try:
+                self.db.commit()
 
-            return 'Successfully registered to coordinates {0.y} {0.x}'.format(point)
+                return 'Successfully registered to coordinates {0.y}, {0.x}'.format(point)
+            except IntegrityError:
+                return 'Already registerd to coordinates {0.y}, {0.x}'.format(point)
 
     def unregister(self, jid, area):
         'Unregister from messages regarding a coordinate, or "unregister all"'
