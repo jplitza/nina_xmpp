@@ -146,6 +146,7 @@ class NinaXMPP:
                 )
                 return
 
+        matches = {}
         for area in event['info'][0]['area']:
             jid_query = self.db.query(Registration.jid).filter(
                 Registration.point.ST_Within(from_shape(area['multipolygon']))
@@ -156,23 +157,32 @@ class NinaXMPP:
                     event['identifier'],
                     jid,
                 )
-                self.send_update(aioxmpp.JID.fromstr(jid), event)
+                matches.setdefault(jid, []).append(area)
 
-    def send_update(self, jid, event):
+        for jid, areas in matches.items():
+            self.send_update(
+                aioxmpp.JID.fromstr(jid),
+                event,
+                areas,
+            )
+
+    def send_update(self, jid, event, areas):
         msg = aioxmpp.Message(
             to=jid,
             type_=aioxmpp.MessageType.CHAT,
         )
-        msg.body[None] = '\n'.join(filter(None, [
-            strip_html(deref_multi(event['info'][0], x) or '') for x in (
-                ['headline'],
-                ['description'],
-                ['instruction'],
-                ['area', 0, 'areaDesc'],
-                ['effective'],
-                ['expires']
-            )
-        ]))
+        msg.body[None] = '\n'.join(filter(
+            None,
+            [', '.join(area['areaDesc'] for area in areas)] + [
+                strip_html(deref_multi(event['info'][0], x) or '') for x in (
+                    ['headline'],
+                    ['description'],
+                    ['instruction'],
+                    ['effective'],
+                    ['expires']
+                )
+            ]
+        ))
         self.client.enqueue(msg)
 
     def register(self, jid, area):
