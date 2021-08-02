@@ -65,8 +65,10 @@ class NinaXMPP:
         )
 
         body = msg.body.any()
+        cbody = body.casefold()
         for cmd in self.commands:
-            if body == cmd or body.startswith(cmd + ' '):
+            ccmd = cmd.casefold()
+            if cbody == ccmd or cbody.startswith(ccmd + ' '):
                 reply.body[None] = getattr(self, cmd)(
                     str(msg.from_.bare()),
                     body[len(cmd) + 1:],
