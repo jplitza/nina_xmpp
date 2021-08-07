@@ -12,7 +12,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from .db import Event, Feed, Registration, initialize as init_db
 from .html import strip_html
-from .helper import parse_area, deref_multi
+from .helper import parse_area, reformat_date
 
 
 class NinaXMPP:
@@ -169,22 +169,28 @@ class NinaXMPP:
             )
 
     def send_update(self, jid, event, areas):
+        lines = [', '.join(area['areaDesc'] for area in areas)]
+        lines += [
+            event['info'][0].get(x, '') for x in (
+                'headline',
+                'description',
+                'instruction',
+            )
+        ]
+        for info in ('effective', 'expires'):
+            if info not in event['info'][0]:
+                continue
+
+            lines += ['%s: %s' % (
+                info.capitalize(),
+                reformat_date(event['info'][0][info]),
+            )]
+
         msg = aioxmpp.Message(
             to=jid,
             type_=aioxmpp.MessageType.CHAT,
         )
-        msg.body[None] = '\n'.join(filter(
-            None,
-            [', '.join(area['areaDesc'] for area in areas)] + [
-                strip_html(deref_multi(event['info'][0], x) or '') for x in (
-                    ['headline'],
-                    ['description'],
-                    ['instruction'],
-                    ['effective'],
-                    ['expires']
-                )
-            ]
-        ))
+        msg.body[None] = strip_html('\n'.join(filter(None, lines)))
         self.client.enqueue(msg)
 
     def register(self, jid, area):
