@@ -63,11 +63,11 @@ msgstr "{url} (zuletzt aktualisiert: {last_modified})"
 
 #: nina_xmpp/__init__.py:190
 msgid "Effective"
-msgstr "Gilt ab: "
+msgstr "Gilt ab"
 
 #: nina_xmpp/__init__.py:190
 msgid "Expires"
-msgstr "Gilt bis: "
+msgstr "Gilt bis"
 
 #: nina_xmpp/__init__.py:202
 msgid "Register to messages regarding a coordinate"
