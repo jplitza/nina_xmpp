@@ -161,10 +161,11 @@ class NinaXMPP:
                 matches.setdefault(jid, []).append(area)
 
         for jid, areas in matches.items():
+            jid_registrations = self.db.query(Registration).filter_by(jid=jid).count()
             self.send_update(
                 aioxmpp.JID.fromstr(jid),
                 event,
-                areas,
+                areas if jid_registrations > 1 else [],
             )
 
     def send_update(self, jid, event, areas):
