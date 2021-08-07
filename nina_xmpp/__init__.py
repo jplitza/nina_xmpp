@@ -1,5 +1,7 @@
 import asyncio
+import gettext
 import logging
+import os
 import signal
 
 import aioxmpp
@@ -13,6 +15,11 @@ from sqlalchemy.orm.exc import NoResultFound
 from .db import Event, Feed, Registration, initialize as init_db
 from .html import strip_html
 from .helper import parse_area, reformat_date
+
+
+localedir = os.path.join(os.path.dirname(__file__), "locale")
+translate = gettext.translation(__package__, localedir, fallback=True)
+_ = translate.gettext
 
 
 class NinaXMPP:
@@ -77,7 +84,7 @@ class NinaXMPP:
                 self.client.enqueue(reply)
                 return
         else:
-            reply.body[None] = (
+            reply.body[None] = _(
                 'I did not understand your request. '
                 'Type "help" for a list of available commands'
             )
@@ -182,7 +189,7 @@ class NinaXMPP:
                 continue
 
             lines += ['%s: %s' % (
-                info.capitalize(),
+                _(info.capitalize()),
                 reformat_date(event['info'][0][info]),
             )]
 
@@ -197,12 +204,12 @@ class NinaXMPP:
         'Register to messages regarding a coordinate'
 
         if not area:
-            return 'No coordinates given'
+            return _('No coordinates given')
 
         try:
             point = parse_area(area)
         except (TypeError, ValueError):
-            return 'Invalid coordinates: {}'.format(area)
+            return _('Invalid coordinates: {}').format(area)
         else:
             self.db.add(Registration(
                 jid=jid,
@@ -211,29 +218,33 @@ class NinaXMPP:
             try:
                 self.db.commit()
 
-                return 'Successfully registered to coordinates {0.y}, {0.x}'.format(point)
+                return _('Successfully registered to coordinates {0.y}, {0.x}').format(point)
             except IntegrityError:
                 self.db.rollback()
-                return 'Already registerd to coordinates {0.y}, {0.x}'.format(point)
+                return _('Already registerd to coordinates {0.y}, {0.x}').format(point)
 
     def unregister(self, jid, area):
         'Unregister from messages regarding a coordinate, or "unregister all"'
 
         if not area:
-            return 'No coordinates given'
+            return _('No coordinates given')
 
         if area == 'all':
             count = self.db.query(Registration).filter_by(jid=jid).delete()
             if count == 0:
-                return 'No registrations found, none unregistered.'
+                return _('No registrations found, none unregistered.')
             else:
                 self.db.commit()
-                return 'Successfully unregistered from {} coordinates'.format(count)
+                return translate.ngettext(
+                    'Successfully unregistered from {} coordinate',
+                    'Successfully unregistered from {} coordinates',
+                    count
+                ).format(count)
 
         try:
             point = parse_area(area)
         except (TypeError, ValueError):
-            return 'Invalid coordinates: {}'.format(area)
+            return _('Invalid coordinates: {}').format(area)
         else:
             try:
                 registration = self.db.query(Registration).filter_by(
@@ -241,28 +252,32 @@ class NinaXMPP:
                     point=str(point),
                 ).one()
             except NoResultFound:
-                return 'Not registered to coordinates {0.y}, {0.x}'.format(point)
+                return _('Not registered to coordinates {0.y}, {0.x}').format(point)
             else:
                 self.db.delete(registration)
                 self.db.commit()
-                return 'Successfully unregistered from coordinates {0.y}, {0.x}'.format(point)
+                return _('Successfully unregistered from coordinates {0.y}, {0.x}').format(point)
 
-    def list(self, jid, _):
+    def list(self, jid, arg):
         'List active registrations'
 
         return '\n'.join(
             '{0.y}, {0.x}'.format(to_shape(point))
             for point,
             in self.db.query(Registration.point).filter_by(jid=jid)
-        ) or 'No active registrations.'
+        ) or _('No active registrations')
 
-    def help(self, jid, _):
+    def help(self, jid, arg):
         'Show available commands'
 
-        cmds = [(cmd, getattr(self, cmd).__doc__) for cmd in self.commands]
-        return '\n'.join(f'{cmd}\n    {doc}' for cmd, doc in cmds)
+        return '\n'.join(
+            '{cmd}\n    {doc}'.format(
+                cmd=cmd,
+                doc=_(getattr(self, cmd).__doc__)
+            ) for cmd in self.commands
+        )
 
-    def feeds(self, jid, _):
+    def feeds(self, jid, arg):
         'Show list of feeds with last update timestamp'
 
         feeds = []
@@ -272,5 +287,8 @@ class NinaXMPP:
                 last_modified = feed.last_modified
             except NoResultFound:
                 last_modified = 'never'
-            feeds.append(f'{url} (last updated: {last_modified})')
+            feeds.append(_('{url} (last updated: {last_modified})').format(
+                url=url,
+                last_modified=last_modified,
+            ))
         return '\n'.join(feeds)

@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: nina-xmpp v4\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+
+#: nina_xmpp/__init__.py:86
+msgid "I did not understand your request. Type \"help\" for a list of available commands"
+msgstr ""
+
+#: nina_xmpp/__init__.py:206 nina_xmpp/__init__.py:229
+msgid "No coordinates given"
+msgstr ""
+
+#: nina_xmpp/__init__.py:211 nina_xmpp/__init__.py:246
+#, python-brace-format
+msgid "Invalid coordinates: {}"
+msgstr ""
+
+#: nina_xmpp/__init__.py:220
+#, python-brace-format
+msgid "Successfully registered to coordinates {0.y}, {0.x}"
+msgstr ""
+
+#: nina_xmpp/__init__.py:223
+#, python-brace-format
+msgid "Already registerd to coordinates {0.y}, {0.x}"
+msgstr ""
+
+#: nina_xmpp/__init__.py:234
+msgid "No registrations found, none unregistered."
+msgstr ""
+
+#: nina_xmpp/__init__.py:238
+#, python-brace-format
+msgid "Successfully unregistered from {} coordinates"
+msgid_plural "Successfully unregistered from {} coordinates"
+msgstr[0] ""
+msgstr[1] ""
+
+#: nina_xmpp/__init__.py:254
+#, python-brace-format
+msgid "Not registered to coordinates {0.y}, {0.x}"
+msgstr ""
+
+#: nina_xmpp/__init__.py:258
+#, python-brace-format
+msgid "Successfully unregistered from coordinates {0.y}, {0.x}"
+msgstr ""
+
+#: nina_xmpp/__init__.py:267
+msgid "No active registrations"
+msgstr ""
+
+#: nina_xmpp/__init__.py:288
+#, python-brace-format
+msgid "{url} (last updated: {last_modified})"
+msgstr ""
+
+#: nina_xmpp/__init__.py:190
+msgid "Effective"
+msgstr ""
+
+#: nina_xmpp/__init__.py:190
+msgid "Expires"
+msgstr ""
+
+#: nina_xmpp/__init__.py:202
+msgid "Register to messages regarding a coordinate"
+msgstr ""
+
+#: nina_xmpp/__init__.py:225
+msgid "Unregister from messages regarding a coordinate, or \"unregister all\""
+msgstr ""
+
+#: nina_xmpp/__init__.py:260
+msgid "List active registrations"
+msgstr ""
+
+#: nina_xmpp/__init__.py:269
+msgid "Show available commands"
+msgstr ""
+
+#: nina_xmpp/__init__.py:275
+msgid "Show list of feeds with last update timestamp"
+msgstr ""
