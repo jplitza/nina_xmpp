@@ -25,13 +25,17 @@ sudo apt-get install libsqlite3-mod-spatialite
 
 `python3 setup.py build`
 
-4. Configure
+4. Install
+
+`sudo python3 setup.py install`
+
+5. Configure
 
 adapt config.yml to your needs
 
 `cp config.sample.yml config.yml`
 
-5. Run
+6. Run
 
 `nina_xmpp config.yml`
 
