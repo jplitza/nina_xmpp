@@ -16,10 +16,10 @@ coordinates the entered.
 
 2. Install dependencies
 
-`sudo pip3 install aioxmpp httpx shapely geoalchemy2 argparse_logging
-
+```
+sudo pip3 install aioxmpp httpx shapely geoalchemy2 argparse_logging
 sudo apt-get install libsqlite3-mod-spatialite
-`
+```
 
 3. Build
 
