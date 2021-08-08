@@ -103,25 +103,25 @@ class NinaXMPP:
     async def update_feeds(self):
         async with httpx.AsyncClient(trust_env=False) as http_client:
             for url in self.config['feeds']:
+                headers = {}
                 try:
                     feed = self.db.query(Feed).filter_by(url=url).one()
                 except NoResultFound:
                     self.logger.info(f'Updating feed {url} for the first time')
                     feed = Feed(url=url)
-                    headers = {}
                 else:
                     self.logger.info(
                         f'Updating feed {url} (last modified: {feed.last_modified})'
                     )
-                    headers = {
-                        'If-Modified-Since': feed.last_modified,
-                        'If-None-Match': feed.etag,
-                    }
+                    if feed.last_modified:
+                        headers['If-Modified-Since'] = feed.last_modified
+                    if feed.etag:
+                        headers['If-None-Match'] = feed.etag
                 response = await http_client.get(url, headers=headers)
 
                 if response.status_code == httpx.codes.OK:
-                    feed.last_modified = response.headers['Last-Modified']
-                    feed.etag = response.headers['ETag']
+                    feed.last_modified = response.headers.get('Last-Modified')
+                    feed.etag = response.headers.get('ETag')
                     self.db.add(feed)
                     self.send_updates_for_feed(response.json())
 
