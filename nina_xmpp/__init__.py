@@ -222,7 +222,14 @@ class NinaXMPP:
             try:
                 self.db.commit()
 
-                return _('Successfully registered to coordinates {0.y}, {0.x}').format(point)
+                ret = _('Successfully registered to coordinates {0.y}, {0.x}').format(point)
+                if self.db.query(Registration).filter_by(jid=jid).count() == 1:
+                    return '\n'.join((
+                        ret,
+                        self.config['welcome_message'].format(**self.config)
+                    ))
+                else:
+                    return ret
             except IntegrityError:
                 self.db.rollback()
                 return _('Already registerd to coordinates {0.y}, {0.x}').format(point)
@@ -274,12 +281,14 @@ class NinaXMPP:
     def help(self, jid, arg):
         'Show available commands'
 
-        return '\n'.join(
+        return '\n'.join([
             '{cmd}\n    {doc}'.format(
                 cmd=cmd,
                 doc=_(getattr(self, cmd).__doc__)
             ) for cmd in self.commands
-        )
+        ] + [
+            _('This bot is operated by {}').format(self.config['owner_jid'])
+        ])
 
     def feeds(self, jid, arg):
         'Show list of feeds with last update timestamp'

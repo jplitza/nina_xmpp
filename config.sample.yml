@@ -12,6 +12,19 @@ check_interval: 300
 # round coordinates to X decimal places
 coordinate_digits: 2
 
+owner_jid: admin@example.org
+# This welcome message is sent once to every user upon registration of their
+# first coordinate (right after the usual confirmation message).
+#
+# Please note that the MIT license applies to this example message as well: I,
+# the author, take no responsibility for the legal correctness or usefulness of
+# this text!
+welcome_message: |
+  Thanks for your first coordinate registration!
+  By using this service, you accept that I, the service operator ({owner_jid}), store the coordinates that you register (rounded to {coordinate_digits} decimal places) along with your JID, until you unregister them.
+  As soon as you send the command "unregister all", I will delete everything I have stored about you.
+  Please also note that I can not be held responsible for any kind of damage resulting from your use of this free service, including but not limited to, bodily harm due to undelivered warnings. Please make sure to have other sources of information available!
+
 xmpp:
   jid: nina@example.org
   password: s3cr3t

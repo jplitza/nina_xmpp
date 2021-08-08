@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: nina-xmpp v4\n"
+"Project-Id-Version: nina-xmpp v5\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -8,55 +8,60 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 
-#: nina_xmpp/__init__.py:86
+#: nina_xmpp/__init__.py:90
 msgid "I did not understand your request. Type \"help\" for a list of available commands"
 msgstr ""
 
-#: nina_xmpp/__init__.py:206 nina_xmpp/__init__.py:229
+#: nina_xmpp/__init__.py:211 nina_xmpp/__init__.py:241
 msgid "No coordinates given"
 msgstr ""
 
-#: nina_xmpp/__init__.py:211 nina_xmpp/__init__.py:246
+#: nina_xmpp/__init__.py:216 nina_xmpp/__init__.py:258
 #, python-brace-format
 msgid "Invalid coordinates: {}"
 msgstr ""
 
-#: nina_xmpp/__init__.py:220
+#: nina_xmpp/__init__.py:225
 #, python-brace-format
 msgid "Successfully registered to coordinates {0.y}, {0.x}"
 msgstr ""
 
-#: nina_xmpp/__init__.py:223
+#: nina_xmpp/__init__.py:235
 #, python-brace-format
 msgid "Already registerd to coordinates {0.y}, {0.x}"
 msgstr ""
 
-#: nina_xmpp/__init__.py:234
+#: nina_xmpp/__init__.py:246
 msgid "No registrations found, none unregistered."
 msgstr ""
 
-#: nina_xmpp/__init__.py:238
+#: nina_xmpp/__init__.py:249
 #, python-brace-format
-msgid "Successfully unregistered from {} coordinates"
+msgid "Successfully unregistered from {} coordinate"
 msgid_plural "Successfully unregistered from {} coordinates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: nina_xmpp/__init__.py:254
+#: nina_xmpp/__init__.py:266
 #, python-brace-format
 msgid "Not registered to coordinates {0.y}, {0.x}"
 msgstr ""
 
-#: nina_xmpp/__init__.py:258
+#: nina_xmpp/__init__.py:270
 #, python-brace-format
 msgid "Successfully unregistered from coordinates {0.y}, {0.x}"
 msgstr ""
 
-#: nina_xmpp/__init__.py:267
+#: nina_xmpp/__init__.py:279
 msgid "No active registrations"
 msgstr ""
 
-#: nina_xmpp/__init__.py:288
+#: nina_xmpp/__init__.py:290
+#, python-brace-format
+msgid "This bot is operated by {}"
+msgstr ""
+
+#: nina_xmpp/__init__.py:303
 #, python-brace-format
 msgid "{url} (last updated: {last_modified})"
 msgstr ""

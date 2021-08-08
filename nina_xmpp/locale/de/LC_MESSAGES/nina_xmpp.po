@@ -7,56 +7,64 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
+#: nina_xmpp/__init__.py:90
+msgid ""
+"I did not understand your request. Type \"help\" for a list of available "
+"commands"
+msgstr ""
+"Ich habe dich nicht verstanden. Schreibe \"help\" um eine Liste der "
+"verfügbaren Befehle anzuzeigen"
 
-#: nina_xmpp/__init__.py:86
-msgid "I did not understand your request. Type \"help\" for a list of available commands"
-msgstr "Ich habe dich nicht verstanden. Schreibe \"help\" um eine Liste der verfügbaren Befehle anzuzeigen"
-
-#: nina_xmpp/__init__.py:206 nina_xmpp/__init__.py:229
+#: nina_xmpp/__init__.py:211 nina_xmpp/__init__.py:241
 msgid "No coordinates given"
 msgstr "Keine Koordinaten übergeben"
 
-#: nina_xmpp/__init__.py:211 nina_xmpp/__init__.py:246
+#: nina_xmpp/__init__.py:216 nina_xmpp/__init__.py:258
 #, python-brace-format
 msgid "Invalid coordinates: {}"
 msgstr "Ungültige Koordinaten: {}"
 
-#: nina_xmpp/__init__.py:220
+#: nina_xmpp/__init__.py:225
 #, python-brace-format
 msgid "Successfully registered to coordinates {0.y}, {0.x}"
 msgstr "Erfolgreich für Koordinaten {0.y}, {0.x} registriert"
 
-#: nina_xmpp/__init__.py:223
+#: nina_xmpp/__init__.py:235
 #, python-brace-format
 msgid "Already registerd to coordinates {0.y}, {0.x}"
 msgstr "Koordinaten {0.y}, {0.x} sind bereits registriert."
 
-#: nina_xmpp/__init__.py:234
+#: nina_xmpp/__init__.py:246
 msgid "No registrations found, none unregistered."
 msgstr "Keine Registrierungen gefunden, keine entfernt."
 
-#: nina_xmpp/__init__.py:238
+#: nina_xmpp/__init__.py:249
 #, python-brace-format
 msgid "Successfully unregistered from {} coordinate"
 msgid_plural "Successfully unregistered from {} coordinates"
 msgstr[0] "Registrierung für {} Koordinate erfolgreich entfernt"
 msgstr[1] "Registrierungen für {} Koordinaten erfolgreich entfernt"
 
-#: nina_xmpp/__init__.py:254
+#: nina_xmpp/__init__.py:266
 #, python-brace-format
 msgid "Not registered to coordinates {0.y}, {0.x}"
 msgstr "Keine Registrierung für Koordinaten {0.y}, {0.x} gefunden"
 
-#: nina_xmpp/__init__.py:258
+#: nina_xmpp/__init__.py:270
 #, python-brace-format
 msgid "Successfully unregistered from coordinates {0.y}, {0.x}"
 msgstr "Registrierung für Koordinaten {0.y}, {0.x} erfolgreich entfernt"
 
-#: nina_xmpp/__init__.py:267
+#: nina_xmpp/__init__.py:279
 msgid "No active registrations"
 msgstr "Keine aktiven Registrierungen"
 
-#: nina_xmpp/__init__.py:288
+#: nina_xmpp/__init__.py:290
+#, python-brace-format
+msgid "This bot is operated by {}"
+msgstr "Dieser Bot wird betrieben von {}"
+
+#: nina_xmpp/__init__.py:303
 #, python-brace-format
 msgid "{url} (last updated: {last_modified})"
 msgstr "{url} (zuletzt aktualisiert: {last_modified})"
@@ -75,7 +83,8 @@ msgstr "Registriere dich für Benachrichtigungen zu bestimmten Koordinaten"
 
 #: nina_xmpp/__init__.py:225
 msgid "Unregister from messages regarding a coordinate, or \"unregister all\""
-msgstr "Entferne deine Registrierung für eine Koordinate, oder \"unregister all\""
+msgstr ""
+"Entferne deine Registrierung für eine Koordinate, oder \"unregister all\""
 
 #: nina_xmpp/__init__.py:260
 msgid "List active registrations"
@@ -87,4 +96,5 @@ msgstr "Zeige verfügbare Befehle"
 
 #: nina_xmpp/__init__.py:275
 msgid "Show list of feeds with last update timestamp"
-msgstr "Zeige eine Liste der Warnquellen und wann sie zuletzt aktualisiert wurden"
+msgstr ""
+"Zeige eine Liste der Warnquellen und wann sie zuletzt aktualisiert wurden"
