@@ -17,8 +17,9 @@ coordinates the entered.
 2. Install dependencies
 
 ```
-sudo pip3 install aioxmpp httpx shapely geoalchemy2 argparse_logging
 sudo apt-get install libsqlite3-mod-spatialite
+sudo pip3 install aioxmpp httpx shapely geoalchemy2 argparse_logging
+
 ```
 
 3. Build
@@ -27,7 +28,13 @@ sudo apt-get install libsqlite3-mod-spatialite
 
 4. Install
 
-`sudo python3 setup.py install`
+Either use 
+
+`python3 setup.py install`
+
+with root privileges (e.g. sudo) or use
+
+`python3 setup.py install --user`
 
 5. Configure
 
