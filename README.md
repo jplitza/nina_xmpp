@@ -6,6 +6,34 @@ Checks the official JSON files every once in a while (configurable in the config
 file) for changes and sends new warnings to registered users based on the
 coordinates the entered.
 
+## Install
+
+(tested on Linux Mint 20.2)
+
+1. Clone the repository
+
+`git clone https://github.com/jplitza/nina_xmpp.git`
+
+2. Install dependencies
+
+`sudo pip3 install aioxmpp httpx shapely geoalchemy2 argparse_logging
+sudo apt-get install libsqlite3-mod-spatialite
+`
+
+3. Build
+
+`python3 setup.py build`
+
+4. Configure
+
+adapt config.yml to your needs
+
+`cp config.sample.yml config.yml`
+
+5. Run
+
+`nina_xmpp config.yml`
+
 ## Usage
 
 Chat with the JID specified in the config to register yourself for warnings:
