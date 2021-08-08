@@ -3,9 +3,12 @@ from datetime import datetime, date
 from shapely.geometry import Point
 
 
-def parse_area(area):
-    # XXX: Limit granularity?
-    return Point(*map(float, reversed(re.split(r'[, ]+', area, 1))))
+def parse_area(area, ndigits):
+    lon, lat = (
+        round(float(x), ndigits)
+        for x in re.split(r'[, ]+', area, 1)
+    )
+    return Point(lat, lon)
 
 
 def reformat_date(isodate):

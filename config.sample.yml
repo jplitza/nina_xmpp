@@ -9,6 +9,9 @@ database: sqlite:///database.db
 
 check_interval: 300
 
+# round coordinates to X decimal places
+coordinate_digits: 2
+
 xmpp:
   jid: nina@example.org
   password: s3cr3t

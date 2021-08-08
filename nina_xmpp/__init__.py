@@ -1,6 +1,7 @@
 import asyncio
 import gettext
 import logging
+import math
 import os
 import signal
 
@@ -20,6 +21,8 @@ from .helper import parse_area, reformat_date
 localedir = os.path.join(os.path.dirname(__file__), "locale")
 translate = gettext.translation(__package__, localedir, fallback=True)
 _ = translate.gettext
+
+SQRT2 = math.sqrt(2)
 
 
 class NinaXMPP:
@@ -157,7 +160,8 @@ class NinaXMPP:
         matches = {}
         for area in event['info'][0]['area']:
             jid_query = self.db.query(Registration.jid).filter(
-                Registration.point.ST_Within(from_shape(area['multipolygon']))
+                Registration.point.ST_Distance(from_shape(area['multipolygon']))
+                <= SQRT2 * 10 ** (-self.config['coordinate_digits'])
             )
             for jid, in jid_query:
                 self.logger.debug(
@@ -207,7 +211,7 @@ class NinaXMPP:
             return _('No coordinates given')
 
         try:
-            point = parse_area(area)
+            point = parse_area(area, self.config['coordinate_digits'])
         except (TypeError, ValueError):
             return _('Invalid coordinates: {}').format(area)
         else:
@@ -242,7 +246,7 @@ class NinaXMPP:
                 ).format(count)
 
         try:
-            point = parse_area(area)
+            point = parse_area(area, self.config['coordinate_digits'])
         except (TypeError, ValueError):
             return _('Invalid coordinates: {}').format(area)
         else:
