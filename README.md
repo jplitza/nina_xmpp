@@ -10,39 +10,33 @@ coordinates the entered.
 
 (tested on Linux Mint 20.2)
 
-1. Clone the repository
-
-`git clone https://github.com/jplitza/nina_xmpp.git`
-
-2. Install dependencies
+1. Install dependencies
 
 ```
-sudo apt-get install libsqlite3-mod-spatialite
-sudo pip3 install aioxmpp httpx shapely geoalchemy2 argparse_logging
-
+sudo apt install libsqlite3-mod-spatialite
 ```
 
-3. Build
+2. Install nina_xmpp
 
-`python3 setup.py build`
+```
+pip3 install git+https://github.com/jplitza/nina_xmpp.git
+```
 
-4. Install
+Alternatively with user only privileges:
 
-Either use 
+```
+pip3 install --user git+https://github.com/jplitza/nina_xmpp.git
+```
 
-`python3 setup.py install`
+3. Configure config.yml
 
-with root privileges (e.g. sudo) or use
+```
+wget https://raw.githubusercontent.com/jplitza/nina_xmpp/master/config.sample.yml -O config.yml
+```
 
-`python3 setup.py install --user`
+Open config.yml in your favourite text editor and adapt to your needs, i.e. provide XMPP credentials and admin contact
 
-5. Configure
-
-adapt config.yml to your needs
-
-`cp config.sample.yml config.yml`
-
-6. Run
+4. Run
 
 `nina_xmpp config.yml`
 
