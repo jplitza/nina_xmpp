@@ -12,33 +12,25 @@ coordinates the entered.
 
 1. Install dependencies
 
-```
-sudo apt install libsqlite3-mod-spatialite
-```
+       sudo apt install libsqlite3-mod-spatialite
 
 2. Install nina_xmpp
 
-```
-pip3 install git+https://github.com/jplitza/nina_xmpp.git
-```
+       pip3 install git+https://github.com/jplitza/nina_xmpp.git
 
-Alternatively with user only privileges:
+   Alternatively with user only privileges:
 
-```
-pip3 install --user git+https://github.com/jplitza/nina_xmpp.git
-```
+       pip3 install --user git+https://github.com/jplitza/nina_xmpp.git
 
 3. Configure config.yml
 
-```
-wget https://raw.githubusercontent.com/jplitza/nina_xmpp/master/config.sample.yml -O config.yml
-```
+       wget https://raw.githubusercontent.com/jplitza/nina_xmpp/master/config.sample.yml -O config.yml
 
-Open config.yml in your favourite text editor and adapt to your needs, i.e. provide XMPP credentials and admin contact
+   Open config.yml in your favourite text editor and adapt to your needs, i.e. provide XMPP credentials and admin contact
 
 4. Run
 
-`nina_xmpp config.yml`
+       nina_xmpp config.yml`
 
 ## Usage
 
