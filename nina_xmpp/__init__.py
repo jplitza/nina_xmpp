@@ -48,23 +48,9 @@ class NinaXMPP:
                 None,
                 self.message_received,
             )
+
             update_feeds_task = asyncio.create_task(self.update_feeds_task())
-            await self.make_sigint_event().wait()
-            update_feeds_task.cancel()
-
-        try:
-            await update_feeds_task
-        except asyncio.CancelledError:
-            pass
-
-    def make_sigint_event(self):
-        event = asyncio.Event()
-        loop = asyncio.get_event_loop()
-        loop.add_signal_handler(
-            signal.SIGINT,
-            event.set,
-        )
-        return event
+            await asyncio.wait({update_feeds_task})
 
     def message_received(self, msg):
         if not msg.body:
