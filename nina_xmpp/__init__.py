@@ -120,7 +120,12 @@ class NinaXMPP:
                         headers['If-Modified-Since'] = feed.last_modified
                     if feed.etag:
                         headers['If-None-Match'] = feed.etag
-                response = await http_client.get(url, headers=headers)
+
+                try:
+                    response = await http_client.get(url, headers=headers)
+                except httpx.RequestError:
+                    self.logger.exception(f'Could not update feed {url}')
+                    continue
 
                 if response.status_code == httpx.codes.OK:
                     feed.last_modified = response.headers.get('Last-Modified')
