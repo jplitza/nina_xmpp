@@ -96,37 +96,36 @@ class NinaXMPP:
     async def update_feeds_task(self):
         self.logger.debug('Started update feeds task')
         while True:
-            await self.update_feeds()
+            self.update_feeds()
             self.logger.debug(
                 'Finished updating feeds, sleeping for '
                 f'{self.config["check_interval"]}s'
             )
             await asyncio.sleep(self.config['check_interval'])
 
-    async def update_feeds(self):
-        async with httpx.AsyncClient(trust_env=False) as http_client:
-            for url in self.config['feeds']:
-                headers = {}
-                try:
-                    feed = self.db.query(Feed).filter_by(url=url).one()
-                except NoResultFound:
-                    self.logger.info(f'Updating feed {url} for the first time')
-                    feed = Feed(url=url)
-                else:
-                    self.logger.info(
-                        f'Updating feed {url} (last modified: {feed.last_modified})'
-                    )
-                    if feed.last_modified:
-                        headers['If-Modified-Since'] = feed.last_modified
-                    if feed.etag:
-                        headers['If-None-Match'] = feed.etag
-                response = await http_client.get(url, headers=headers)
+    def update_feeds(self):
+        for url in self.config['feeds']:
+            headers = {}
+            try:
+                feed = self.db.query(Feed).filter_by(url=url).one()
+            except NoResultFound:
+                self.logger.info(f'Updating feed {url} for the first time')
+                feed = Feed(url=url)
+            else:
+                self.logger.info(
+                    f'Updating feed {url} (last modified: {feed.last_modified})'
+                )
+                if feed.last_modified:
+                    headers['If-Modified-Since'] = feed.last_modified
+                if feed.etag:
+                    headers['If-None-Match'] = feed.etag
+            response = httpx.get(url, headers=headers)
 
-                if response.status_code == httpx.codes.OK:
-                    feed.last_modified = response.headers.get('Last-Modified')
-                    feed.etag = response.headers.get('ETag')
-                    self.db.add(feed)
-                    self.send_updates_for_feed(response.json())
+            if response.status_code == httpx.codes.OK:
+                feed.last_modified = response.headers.get('Last-Modified')
+                feed.etag = response.headers.get('ETag')
+                self.db.add(feed)
+                self.send_updates_for_feed(response.json())
 
         self.db.commit()
 
