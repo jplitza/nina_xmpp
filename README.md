@@ -58,6 +58,10 @@ Now you will receive warnings for the center of Berlin when they happen.
 
 You can register to multiple coordinates.
 
+## Logging
+
+Logging can be configured via the `--log-level <LOG_LEVEL>` argument  with `INFO` being the default if not specified.
+
 ## Hosted instance
 
 If you don't want to host this yourself, feel free to use my instance at
