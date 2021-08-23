@@ -104,7 +104,7 @@ class NinaXMPP:
             await asyncio.sleep(self.config['check_interval'])
 
     async def update_feeds(self):
-        async with httpx.AsyncClient(trust_env=False) as http_client:
+        async with httpx.AsyncClient(trust_env=False, timeout=10.0) as http_client:
             for url in self.config['feeds']:
                 headers = {}
                 try:
