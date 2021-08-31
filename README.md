@@ -30,7 +30,9 @@ coordinates the entered.
 
 4. Run
 
-       nina_xmpp config.yml`
+       nina_xmpp config.yml
+
+   Logging can be configured via the `--log-level <LOG_LEVEL>` argument  with `INFO` being the default if not specified.
 
 ## Usage
 
@@ -57,10 +59,6 @@ Chat with the JID specified in the config to register yourself for warnings:
 Now you will receive warnings for the center of Berlin when they happen.
 
 You can register to multiple coordinates.
-
-## Logging
-
-Logging can be configured via the `--log-level <LOG_LEVEL>` argument  with `INFO` being the default if not specified.
 
 ## Hosted instance
 
