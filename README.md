@@ -30,7 +30,9 @@ coordinates the entered.
 
 4. Run
 
-       nina_xmpp config.yml`
+       nina_xmpp config.yml
+
+   Logging can be configured via the `--log-level <LOG_LEVEL>` argument  with `INFO` being the default if not specified.
 
 ## Usage
 
