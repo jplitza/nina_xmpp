@@ -18,11 +18,7 @@ def main():
 
     main = NinaXMPP(config)
 
-    loop = asyncio.get_event_loop()
-    try:
-        loop.run_until_complete(main.run())
-    finally:
-        loop.close()
+    asyncio.run(main.run())
 
 
 if __name__ == '__main__':
