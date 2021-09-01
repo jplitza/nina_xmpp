@@ -61,13 +61,16 @@ msgstr "Keine aktiven Registrierungen"
 
 #: nina_xmpp/__init__.py:290
 #, python-brace-format
-msgid "This bot is operated by {}"
-msgstr "Dieser Bot wird betrieben von {}"
+msgid "This bot is operated in version {} by {}"
+msgstr "Dieser Bot wird in Version {} betrieben von {}"
 
 #: nina_xmpp/__init__.py:303
 #, python-brace-format
 msgid "{url} (last updated: {last_modified})"
 msgstr "{url} (zuletzt aktualisiert: {last_modified})"
+
+msgid "The feeds are checked for updates every {} seconds"
+msgstr "Die Warnquellen werden alle {} Sekunden auf Updates geprüft"
 
 #: nina_xmpp/__init__.py:190
 msgid "Effective"

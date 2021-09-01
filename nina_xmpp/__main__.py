@@ -1,4 +1,5 @@
 import asyncio
+import configparser
 
 from . import NinaXMPP
 
@@ -16,7 +17,10 @@ def main():
     config = yaml.safe_load(args.config_file)
     args.config_file.close()
 
-    main = NinaXMPP(config)
+    setup_config = configparser.ConfigParser()
+    setup_config.read('setup.cfg')
+
+    main = NinaXMPP(config, setup_config)
 
     asyncio.run(main.run())
 

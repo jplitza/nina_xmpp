@@ -28,8 +28,9 @@ SQRT2 = math.sqrt(2)
 class NinaXMPP:
     commands = ('register', 'unregister', 'feeds', 'list', 'help')
 
-    def __init__(self, config):
+    def __init__(self, config, setup_config):
         self.config = config
+        self.setup_config = setup_config
         self.logger = logging.getLogger(self.__class__.__name__)
         self.db = init_db(config['database'])
 
@@ -272,13 +273,16 @@ class NinaXMPP:
     def help(self, jid, arg):
         'Show available commands'
 
+        version = self.setup_config.get('metadata', 'version', fallback='')
+
         return '\n'.join([
             '{cmd}\n    {doc}'.format(
                 cmd=cmd,
                 doc=_(getattr(self, cmd).__doc__)
             ) for cmd in self.commands
         ] + [
-            _('This bot is operated by {}').format(self.config['owner_jid'])
+            '',
+            _('This bot is operated in version {} by {}').format(version, self.config['owner_jid']),
         ])
 
     def feeds(self, jid, arg):
@@ -295,4 +299,7 @@ class NinaXMPP:
                 url=url,
                 last_modified=last_modified,
             ))
-        return '\n'.join(feeds)
+        return '\n'.join(feeds + [
+            '',
+            _('The feeds are checked for updates every {} seconds').format(self.config['check_interval']),
+        ])
