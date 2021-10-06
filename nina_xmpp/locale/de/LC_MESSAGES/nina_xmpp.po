@@ -61,8 +61,8 @@ msgstr "Keine aktiven Registrierungen"
 
 #: nina_xmpp/__init__.py:290
 #, python-brace-format
-msgid "This bot is operated in version {} by {}"
-msgstr "Dieser Bot wird in Version {} betrieben von {}"
+msgid "This bot is operated by {}"
+msgstr "Dieser Bot wird betrieben von {}"
 
 #: nina_xmpp/__init__.py:303
 #, python-brace-format
