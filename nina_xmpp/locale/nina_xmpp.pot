@@ -66,6 +66,9 @@ msgstr ""
 msgid "{url} (last updated: {last_modified})"
 msgstr ""
 
+msgid "The feeds are checked for updates every {} seconds"
+msgstr ""
+
 #: nina_xmpp/__init__.py:190
 msgid "Effective"
 msgstr ""

@@ -69,6 +69,9 @@ msgstr "Dieser Bot wird betrieben von {}"
 msgid "{url} (last updated: {last_modified})"
 msgstr "{url} (zuletzt aktualisiert: {last_modified})"
 
+msgid "The feeds are checked for updates every {} seconds"
+msgstr "Die Warnquellen werden alle {} Sekunden auf Updates geprüft"
+
 #: nina_xmpp/__init__.py:190
 msgid "Effective"
 msgstr "Gilt ab"

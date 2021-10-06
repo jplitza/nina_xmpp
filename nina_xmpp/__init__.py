@@ -295,4 +295,7 @@ class NinaXMPP:
                 url=url,
                 last_modified=last_modified,
             ))
-        return '\n'.join(feeds)
+        return '\n'.join(feeds + [
+            '',
+            _('The feeds are checked for updates every {} seconds').format(self.config['check_interval']),
+        ])
