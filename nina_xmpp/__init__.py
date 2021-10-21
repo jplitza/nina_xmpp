@@ -179,13 +179,18 @@ class NinaXMPP:
                 'instruction',
             )
         ]
-        for info in ('effective', 'expires'):
+        for info in ('severity', 'effective', 'expires'):
             if info not in event['info'][0]:
                 continue
 
+            if info in ('effective', 'expires'):
+                info_value = reformat_date(event['info'][0][info])
+            else:
+                info_value = _(event['info'][0][info])
+
             lines += ['%s: %s' % (
                 _(info.capitalize()),
-                reformat_date(event['info'][0][info]),
+                info_value,
             )]
 
         msg = aioxmpp.Message(

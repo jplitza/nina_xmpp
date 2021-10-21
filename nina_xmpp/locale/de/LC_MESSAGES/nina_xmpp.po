@@ -72,6 +72,18 @@ msgstr "{url} (zuletzt aktualisiert: {last_modified})"
 msgid "The feeds are checked for updates every {} seconds"
 msgstr "Die Warnquellen werden alle {} Sekunden auf Updates geprüft"
 
+msgid "Severity"
+msgstr "Schweregrad"
+
+msgid "Minor"
+msgstr "Leicht"
+
+msgid "Moderate"
+msgstr "Mittel"
+
+msgid "Severe"
+msgstr "Schwer"
+
 #: nina_xmpp/__init__.py:190
 msgid "Effective"
 msgstr "Gilt ab"

@@ -69,6 +69,18 @@ msgstr ""
 msgid "The feeds are checked for updates every {} seconds"
 msgstr ""
 
+msgid "Severity"
+msgstr ""
+
+msgid "Minor"
+msgstr ""
+
+msgid "Moderate"
+msgstr ""
+
+msgid "Severe"
+msgstr ""
+
 #: nina_xmpp/__init__.py:190
 msgid "Effective"
 msgstr ""
