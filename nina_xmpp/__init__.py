@@ -63,6 +63,10 @@ class NinaXMPP:
 
         body = msg.body.any()
         cbody = body.casefold()
+
+        if cbody.startswith('geo:'):
+            cbody = cbody.replace('geo:', 'register ')
+            body = cbody.replace('geo:', 'register ')
         for cmd in self.commands:
             ccmd = cmd.casefold()
             if cbody == ccmd or cbody.startswith(ccmd + ' '):
