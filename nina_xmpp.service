@@ -1,0 +1,15 @@
+[Unit]
+Description=XMPP-Bot for NINA warnings
+After=ejabberd.service
+
+[Service]
+User=nina_xmpp
+Group=nina_xmpp
+WorkingDirectory=/opt/nina_xmpp
+ExecStart=/opt/nina_xmpp/.local/bin/nina_xmpp /opt/nina_xmpp/config.yml
+Restart=always
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
