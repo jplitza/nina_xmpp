@@ -33,6 +33,26 @@ coordinates the entered.
        nina_xmpp config.yml
 
    Logging can be configured via the `--log-level <LOG_LEVEL>` argument  with `INFO` being the default if not specified.
+   
+
+## systemd
+
+   (for Debian 11)
+1. Create a user the service should be executed as
+
+      `sudo adduser nina_xmpp --shell /bin/bash --home /opt/nina_xmpp --gecos 'xmpp bot for NINA' --disabled-password`
+
+2. Install according to this README.
+
+3. Link unit file to systemd directory
+
+      `ln -s /opt/nina_xmpp/nina_xmpp.service /etc/systemd/system/nina_xmpp.service`
+
+4. Reload systemd, enable and start unit
+
+    `sudo systemctl daemon-reload
+    sudo systemctl enable nina_xmpp.service
+    sudo systemctl start nina_xmpp.service`
 
 ## Usage
 
