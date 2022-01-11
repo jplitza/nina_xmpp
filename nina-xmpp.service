@@ -1,0 +1,14 @@
+[Unit]
+Description=NINA XMPP bot
+After=prosody.service ejabberd.service
+
+[Service]
+ExecStart=/usr/local/bin/nina_xmpp --log-level INFO config.yml
+WorkingDirectory=/var/lib/nina_xmpp
+StateDirectory=nina_xmpp
+DynamicUser=yes
+Environment=LANGUAGE=de_DE
+ProtectProc=noaccess
+
+[Install]
+WantedBy=multi-user.target

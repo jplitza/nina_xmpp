@@ -34,6 +34,8 @@ coordinates the entered.
 
    Logging can be configured via the `--log-level <LOG_LEVEL>` argument  with `INFO` being the default if not specified.
 
+   You can use my systemd unit file in `nina-xmpp.service` as a starting point if you want to run it on a server.
+
 ## Usage
 
 Chat with the JID specified in the config to register yourself for warnings:
