@@ -45,6 +45,6 @@ def initialize(database):
     engine = create_engine(database)
     listen(engine, 'connect', _load_spatialite)
     with engine.connect() as conn:
-        conn.execute(select([func.InitSpatialMetaData(True, 'WGS84')]))
+        conn.execute(select(func.InitSpatialMetaData(True, 'WGS84')))
     Base.metadata.create_all(engine)
     return sessionmaker(bind=engine)()
