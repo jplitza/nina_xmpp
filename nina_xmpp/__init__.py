@@ -1,9 +1,9 @@
 import asyncio
 import gettext
+import json
 import logging
 import math
 import os
-import signal
 
 import aioxmpp
 import aioxmpp.dispatcher
@@ -117,11 +117,22 @@ class NinaXMPP:
                     self.logger.exception(f'Could not update feed {url}')
                     continue
 
-                if response.status_code == httpx.codes.OK:
-                    feed.last_modified = response.headers.get('Last-Modified')
-                    feed.etag = response.headers.get('ETag')
-                    self.db.add(feed)
-                    self.send_updates_for_feed(response.json())
+                if response.status_code != httpx.codes.OK:
+                    self.logger.warn(
+                        f'Error code updating feed {url}: {response.status_code}'
+                    )
+                    continue
+
+                try:
+                    content = response.json()
+                except json.JSONDecodeError as e:
+                    self.logger.warn(f'Error decoding JSON for feed {url}: {e}')
+                    continue
+
+                feed.last_modified = response.headers.get('Last-Modified')
+                feed.etag = response.headers.get('ETag')
+                self.db.add(feed)
+                self.send_updates_for_feed(content)
 
         self.db.commit()
 
