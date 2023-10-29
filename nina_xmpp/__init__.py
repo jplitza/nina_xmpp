@@ -117,6 +117,9 @@ class NinaXMPP:
                     self.logger.exception(f'Could not update feed {url}')
                     continue
 
+                if response.status_code == httpx.codes.NOT_MODIFIED:
+                    continue
+
                 if httpx.codes.is_error(response.status_code):
                     self.logger.warn(
                         f'Error code updating feed {url}: {response.status_code}'
