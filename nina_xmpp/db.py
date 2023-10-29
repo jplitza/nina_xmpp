@@ -18,7 +18,7 @@ class Registration(Base):
     __tablename__ = 'registration'
     id = Column(Integer, primary_key=True)
     jid = Column(String, index=True, nullable=False)
-    point = Column(Geometry(geometry_type='POINT', management=True), nullable=False)
+    point = Column(Geometry(geometry_type='POINT'), nullable=False)
 
 
 # cannot use UniqueConstraint since the point column is added later on
