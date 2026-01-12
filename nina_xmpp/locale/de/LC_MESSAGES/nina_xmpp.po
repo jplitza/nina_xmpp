@@ -73,7 +73,7 @@ msgid "The feeds are checked for updates every {} seconds"
 msgstr "Die Warnquellen werden alle {} Sekunden auf Updates geprüft"
 
 #: nina_xmpp/__init__.py:190
-msgid "Effective"
+msgid "Onset"
 msgstr "Gilt ab"
 
 #: nina_xmpp/__init__.py:190

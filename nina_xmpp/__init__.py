@@ -197,7 +197,7 @@ class NinaXMPP:
                 'instruction',
             )
         ]
-        for info in ('effective', 'expires'):
+        for info in ('onset', 'expires'):
             if info not in event['info'][0]:
                 continue
 

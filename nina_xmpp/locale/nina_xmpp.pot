@@ -74,7 +74,7 @@ msgid "Effective"
 msgstr ""
 
 #: nina_xmpp/__init__.py:190
-msgid "Expires"
+msgid "Onset"
 msgstr ""
 
 #: nina_xmpp/__init__.py:202
