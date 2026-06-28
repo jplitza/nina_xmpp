@@ -165,6 +165,12 @@ class NinaXMPP:
                     event['identifier'],
                 )
                 return
+            except KeyError:
+                self.logger.warn(
+                    'Event %s has no polygon',
+                    event['identifier'],
+                )
+                return
 
         matches = {}
         for area in event['info'][0]['area']:
